@@ -16,8 +16,21 @@ function preload(){
   font = loadFont("quicksand.ttf")
 }
 
+function saveData(){
+  let windowCookie = []
+  for(i in windows){
+    windowCookie[windowCookie.length] = {
+      appClass : windows[i].constructor.name,
+      x: windows[i].box.x,
+      y: windows[i].box.y
+    }
+  }
+  removeItem("windows")
+  storeItem("windows",windowCookie)
+
+}
+
 function setup() {
-  fullscreen(true)
   console.log("⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿  Whatcha doin here?\n⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿\n⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿\n"+
   "⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡆⢻⣿⣿\n⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣤⣻⣿⣯⣤⣹⣿\n⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⡇⠀⣿⢟⣿⡀⠟⢹⣿\n⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⣤⣤⣼⣿⣿⡄⢹⣿\n"+
   "⣷⠀⠀⠀⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⠛⠉⠈⢻\n⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠛⠛⠛⠀⠀⣤⣾\n⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠛⠁⣰⣿⣿\n⣿⣿⣿⣿⣿⣷⣦⣤⣤⣤⣤⣄⣀⣀⣀⣀⣀⣠⣤⣤⣤⣾⣿⣿⣿\n");
@@ -47,6 +60,16 @@ function setup() {
    }
   ]
 
+  let windowCookie = getItem("windows")
+  for(i in windowCookie){
+    for(j in apps){
+      if(apps[j].appClass.name == windowCookie[i].appClass){
+        windows.unshift(new apps[j].appClass(windowCookie[i].x,windowCookie[i].y))
+      }
+    }
+  }
+  saveData()
+
   leftArrow = loadImage("caret-left-square-fill.svg")
   downArrow = loadImage("caret-down-square-fill.svg")
 
@@ -74,8 +97,10 @@ function draw() {
         windows.splice(i,1)
         windows.unshift(topWindow)
       }
+      saveData()
       break
     }
+
   }
   for(i in windows){
     if(windows[i].hasOwnProperty("itxt")){
@@ -100,7 +125,7 @@ function mouseClicked(){
       y = menuItemIndexes[i][1]
       if(mouseX > x - 15 && mouseX < x + 15 && mouseY > y - 15 && mouseY < y + 15){
         if(i > 0 && i <4){
-          windows.unshift(new apps[-1+i+3*page].appClass) 
+          windows.unshift(new apps[-1+i+3*page].appClass)
           showMenu = false
         }
         if(i == 0 && page != 0){
@@ -132,6 +157,7 @@ function windowResized() {
     let y = 310 / 2 * Math.sin(radians(a)) + windowHeight;
     menuItemIndexes[i] = [x,y]
   }
+  saveData()
 }
 
 

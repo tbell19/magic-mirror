@@ -1,6 +1,6 @@
 class Bus{
-  constructor(){
-    this.box = new Box("Citi-Bus",0,0,200,120);
+  constructor(x=0,y=0){
+    this.box = new Box("Citi-Bus",x,y,200,120);
     this.txt = this.box.text("...",32,80,70);
     this.topText = this.box.text("Next bus will arrive in: ",15,15,25)
     this.bottomText = this.box.text("minutes",22,55,100)

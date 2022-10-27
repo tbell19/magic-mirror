@@ -42,7 +42,6 @@ class Box{
       
           this.x =  movedX + this.x
           this.y =  movedY + this.y
-      
     }
 
     if(!this.held &&  mouseIsPressed && mouseX > this.x+this.w-40 && mouseX < this.x + this.w &&

@@ -1,6 +1,6 @@
 class Weather{
-    constructor(){
-      this.box = new Box("Weather",0,0,300,180);
+    constructor(x=0,y=0){
+      this.box = new Box("Weather",x,y,300,180);
       this.locName = this.box.text("Finding location...",28,2,30)
       this.hasLoc = false;
       this.timer = -1

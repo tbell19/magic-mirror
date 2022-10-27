@@ -1,6 +1,6 @@
 class debugWindow{
-    constructor(){
-        this.box = new Box("Debug",0,0,200,120);
+    constructor(x=0,y=0){
+        this.box = new Box("Debug",x,y,200,120);
         this.xTxt = this.box.text("...",20,2,20);
         this.yTxt = this.box.text("...",20,2,40);
         this.index = this.box.text("...",20,2,60);

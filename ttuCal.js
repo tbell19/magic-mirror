@@ -1,5 +1,5 @@
 class ttuCal{
-    constructor(){
+    constructor(x=0,y=0){
       this.box = new Box("TTU Events",0,0,300,180);
       this.timer = 0
     }
