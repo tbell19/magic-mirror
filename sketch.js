@@ -35,7 +35,8 @@ function setup() {
   if(urlParams.get("access_token")){
     storeItem("googleAccessToken",urlParams.get("access_token"))
   }
-  if(!getItem("googleAccessToken")){
+  if(!getItem("googleAccessToken") && window.confirm("no google account detected would you like to sign in")){
+    
     window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.profile&"+
     "response_type=token&"+
     "redirect_uri=https://mirror.trentb.tech&"+
