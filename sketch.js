@@ -31,16 +31,28 @@ function saveData(){
 }
 
 function setup() {
-  urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get("access_token")){
-    storeItem("googleAccessToken",urlParams.get("access_token"))
+  if(getParams()["access_token"]){
+    storeItem("googleAccessToken",getParams()["access_token"])
   }
   if(!getItem("googleAccessToken") && window.confirm("no google account detected would you like to sign in")){
     
     window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.profile&"+
     "response_type=token&"+
     "redirect_uri=https://mirror.trentb.tech&"+
-    "client_id=15652225350-ub517p7iuenuiphqr2bap95r3lqafalq.apps.googleusercontent.com ")
+    "client_id=15652225350-ub517p7iuenuiphqr2bap95r3lqafalq.apps.googleusercontent.com ")  
+  }
+  if(getItem("googleAccessToken")){
+    fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json",{ 
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Origin': '',
+        'Bearer': getItem("googleAccessToken")
+      }
+    }).then(function(res){
+      console.log(res.json)
+    })
   }
 
   console.log("⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿  Whatcha doin here?\n⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿\n⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿\n"+
@@ -243,4 +255,20 @@ function drawMenu(){
     text("X",10,windowHeight-10);
   }
 
+}
+
+
+
+function getParams(){
+  params = {}
+  paramStrings = String(window.location).split("#")
+  if(paramStrings[1]){
+    paramStrings = paramStrings[1].split("&")
+  }
+  
+  for(i in paramStrings){
+    x = paramStrings[i].split("=")
+    params[x[0]] = x[1]
+  }
+  return params
 }
