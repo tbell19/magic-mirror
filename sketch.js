@@ -47,7 +47,8 @@ function setup() {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Origin': '',
+        'Origin': 'mirror.trentb.tech',
+        'Host':'www.googleapis.com',
         'Bearer': getItem("googleAccessToken")
       }
     }).then(function(res){
