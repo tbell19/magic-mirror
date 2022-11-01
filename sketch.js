@@ -42,7 +42,7 @@ function setup() {
     "client_id=15652225350-ub517p7iuenuiphqr2bap95r3lqafalq.apps.googleusercontent.com")  
   }
   if(getItem("googleAccessToken")){
-    fetch("https://cors-anywhere.herokuapp.com/https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token="+getItem("googleAccessToken")).then((value) => {
+    fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList?"+getItem("googleAccessToken")).then((value) => {
       console.log(value);
     });
   }
