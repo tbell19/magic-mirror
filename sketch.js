@@ -39,21 +39,12 @@ function setup() {
     window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.profile&"+
     "response_type=token&"+
     "redirect_uri=https://mirror.trentb.tech&"+
-    "client_id=15652225350-ub517p7iuenuiphqr2bap95r3lqafalq.apps.googleusercontent.com ")  
+    "client_id=15652225350-ub517p7iuenuiphqr2bap95r3lqafalq.apps.googleusercontent.com")  
   }
   if(getItem("googleAccessToken")){
-    fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json",{ 
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Origin': 'mirror.trentb.tech',
-        'Host':'www.googleapis.com',
-        'Bearer': getItem("googleAccessToken")
-      }
-    }).then(function(res){
-      console.log(res.json)
-    })
+    fetch("https://cors-anywhere.herokuapp.com/https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token="+getItem("googleAccessToken")).then((value) => {
+      console.log(value);
+    });
   }
 
   console.log("⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿  Whatcha doin here?\n⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿\n⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿\n"+
