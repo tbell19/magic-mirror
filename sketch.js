@@ -12,6 +12,7 @@ let downArrow
 let menuItemIndexes = []
 let page = 0
 
+
 function preload(){
   font = loadFont("quicksand.ttf")
 }
@@ -25,28 +26,13 @@ function saveData(){
       y: windows[i].box.y
     }
   }
+  console.log(windowCookie)
   removeItem("windows")
   storeItem("windows",windowCookie)
 
 }
 
 function setup() {
-  if(getParams()["access_token"]){
-    storeItem("googleAccessToken",getParams()["access_token"])
-  }
-  if(!getItem("googleAccessToken") && window.confirm("no google account detected would you like to sign in")){
-    
-    window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.profile&"+
-    "response_type=token&"+
-    "redirect_uri=https://mirror.trentb.tech&"+
-    "client_id=15652225350-ub517p7iuenuiphqr2bap95r3lqafalq.apps.googleusercontent.com")  
-  }
-  if(getItem("googleAccessToken")){
-    fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token"+getItem("googleAccessToken")).then((value) => {
-      console.log(value);
-    });
-  }
-
   console.log("⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿  Whatcha doin here?\n⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿\n⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿\n"+
   "⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡆⢻⣿⣿\n⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣤⣻⣿⣯⣤⣹⣿\n⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⡇⠀⣿⢟⣿⡀⠟⢹⣿\n⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⣤⣤⣼⣿⣿⡄⢹⣿\n"+
   "⣷⠀⠀⠀⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⠛⠉⠈⢻\n⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠛⠛⠛⠀⠀⣤⣾\n⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠛⠁⣰⣿⣿\n⣿⣿⣿⣿⣿⣷⣦⣤⣤⣤⣤⣄⣀⣀⣀⣀⣀⣠⣤⣤⣤⣾⣿⣿⣿\n");
@@ -69,9 +55,13 @@ function setup() {
       icon:loadImage("bug-fill.svg"),
       appClass: debugWindow
    },{
-    name:"Debug",
-    icon:loadImage("bug-fill.svg"),
-    appClass: ttuCal
+    name:"Clock",
+    icon:loadImage("clock.svg"),
+    appClass: Clock
+   },{
+    name:"News",
+    icon:loadImage("news.svg"),
+    appClass: News
    }
   ]
 
@@ -79,11 +69,11 @@ function setup() {
   for(i in windowCookie){
     for(j in apps){
       if(apps[j].appClass.name == windowCookie[i].appClass){
+        console.log("loaded "+apps[j].appClass.name+" at x:"+windowCookie[i].x+" y:"+windowCookie[i].y)
         windows.unshift(new apps[j].appClass(windowCookie[i].x,windowCookie[i].y))
       }
     }
   }
-  saveData()
 
   leftArrow = loadImage("caret-left-square-fill.svg")
   downArrow = loadImage("caret-down-square-fill.svg")
@@ -101,9 +91,9 @@ function draw() {
   for(i in windows){
     if(windows[i].box.destroy == true){
       windows.splice(i,1)
+      saveData()
     }
   }
-
   background(0,0,0);
   for(i in windows){
     if(windows[i].box.checkClick() == true){
@@ -112,7 +102,7 @@ function draw() {
         windows.splice(i,1)
         windows.unshift(topWindow)
       }
-      saveData()
+      //saveData()
       break
     }
 
@@ -123,6 +113,7 @@ function draw() {
     }
     i = windows[windows.length-1-i]
     i.update();
+    i.box.editMode = showMenu;
     i.box.draw();
   }
   drawMenu();
@@ -141,7 +132,7 @@ function mouseClicked(){
       if(mouseX > x - 15 && mouseX < x + 15 && mouseY > y - 15 && mouseY < y + 15){
         if(i > 0 && i <4){
           windows.unshift(new apps[-1+i+3*page].appClass)
-          showMenu = false
+          //showMenu = false
         }
         if(i == 0 && page != 0){
           page = page -1
@@ -231,9 +222,17 @@ function drawMenu(){
         image(downArrow,x-15,y-15,30,30)
       }else if(i > 0 && i < 4){
         if(!apps[-1+i+3*page]){break}
-        image(apps[-1+i+3*page].icon,x-15,y-15,30,30)
+        image(apps[-1+i+3*page].icon,x-15,y-20,30,30)
+        fill(0,0,0)
+        textSize(10);
+        textAlign(CENTER)
+        text(apps[-1+i+3*page].name,x,y+20)
       }
     }
+    fill(0,0,0)
+    textSize(12);
+    textAlign(CENTER)
+    text("Page: "+(page+1)+"/"+apps.length%3,70,windowHeight-65)
   }
 
   fill(255*abs(menuAnimMult),255*abs(menuAnimMult),255*abs(menuAnimMult))
