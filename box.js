@@ -104,11 +104,12 @@ class boxText{
 }
 
 class boxRect{
-  constructor(box,id,x,y,w,h,tl,tr,br,bl){
+  constructor(box,id,x=null,y=null,w=null,h=null,tl=null,tr=null,br=null,bl=null){
     this.box = box
     this.x = x
     this.y = y
     this.h = h
+    this.w = w
     this.tl = tl
     this.tr = tr
     this.br = br
@@ -118,7 +119,8 @@ class boxRect{
   }
 
   draw(){
-    rect(this.x, this.y, this.w, this.h, this.tl, this.tr, this.br, this.bl)
+    fill(255,255,255)
+    rect(this.x+this.box.x, this.y+this.box.y+40, this.w, this.h, this.tl, this.tr, this.br, this.bl)
   }
 }
 

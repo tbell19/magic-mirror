@@ -33,6 +33,7 @@ function saveData(){
 }
 
 function setup() {
+  p5.disableFriendlyErrors =true;
   console.log("⣿⣿⣿⣿⣿⣿⡿⣟⠻⠯⠭⠉⠛⠋⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿  Whatcha doin here?\n⣿⣿⣿⣿⡽⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠈⠙⢿⣿⣿⣿\n⣿⣿⠏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣷⣦⡀⠶⣿⣿⣿\n"+
   "⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡆⢻⣿⣿\n⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣤⣻⣿⣯⣤⣹⣿\n⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⡇⠀⣿⢟⣿⡀⠟⢹⣿\n⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⣤⣤⣼⣿⣿⡄⢹⣿\n"+
   "⣷⠀⠀⠀⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⠛⠉⠈⢻\n⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠛⠛⠛⠀⠀⣤⣾\n⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠛⠁⣰⣿⣿\n⣿⣿⣿⣿⣿⣷⣦⣤⣤⣤⣤⣄⣀⣀⣀⣀⣀⣠⣤⣤⣤⣾⣿⣿⣿\n");
@@ -62,6 +63,11 @@ function setup() {
     name:"News",
     icon:loadImage("news.svg"),
     appClass: News
+   },
+   {
+    name:"Health",
+    icon:loadImage("bandaid.svg"),
+    appClass: Health
    }
   ]
 
@@ -112,9 +118,18 @@ function draw() {
       windows[i].itxt = i + " / "+ windows.length
     }
     i = windows[windows.length-1-i]
+    try{
     i.update();
     i.box.editMode = showMenu;
     i.box.draw();
+    }catch(e){
+      if(i.name == "Error"){
+        throw e
+      }
+      windows.unshift(new ErrorWindow(0,0,i.box.name,e.message))
+      i.box.destroy = true
+      throw e
+    }
   }
   drawMenu();
 }
@@ -230,9 +245,11 @@ function drawMenu(){
       }
     }
     fill(0,0,0)
-    textSize(12);
+    textSize(20);
     textAlign(CENTER)
-    text("Page: "+(page+1)+"/"+apps.length%3,70,windowHeight-65)
+    text("Page: ",68,windowHeight-70)
+    textSize(25);
+    text((page+1)+"/"+Math.floor(apps.length/3),85,windowHeight-40)
   }
 
   fill(255*abs(menuAnimMult),255*abs(menuAnimMult),255*abs(menuAnimMult))

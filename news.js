@@ -8,24 +8,29 @@ class News{
       this.headlineAnim = 1
       this.headlinei = 0
       this.news = {}
+      this.newsImg = loadImage("news.svg")
+      this.newsIconRect = this.box.rect(646-(textWidth("Loading headlines.")/2),18,18,16)
+      this.newsIcon = this.box.img(this.newsImg,650-(textWidth("Loading headlines.")/2),18)
       this.titletxt = this.box.text("Loading headlines.",20,600,32,CENTER)
     }
   
-  // 71ac1dbf716d46a79edf882a0b7b09f0x
 
 
     update(){
 
         if (this.timer == 0 || millis() >= 1500000+this.timer) {
             this.timer = millis();
-            console.log("fetching news data")
-            fetch("https://newsapi.org/v2/top-headlines?country=us&apiKey=71ac1dbf716d46a79edf882a0b7b09f0").then(d=> d.json()).then(e=> this.updateData(e))
+            fetch("https://api.currentsapi.services/v1/latest-news?apiKey=w22MFCBuKWUhcHGoLoobyZP39CyToM5vDgLPWoX1hHuR5KPW").then(d=> d.json()).then(e=> this.updateData(e))
           }
 
         if (this.timer2 != -1 && this.timer2 == 0 || millis() >= 30000+this.timer2) {
           this.timer2 = millis()
-          this.titletxt.text = this.news.articles[this.headlinei]["title"]
-          if(this.headlinei < this.news.articles.length -1){
+          this.titletxt.text = this.news[this.headlinei]["title"]
+          textSize(20)
+          this.newsIcon.x = 570-(textWidth(this.news[this.headlinei]["title"])/2)
+          this.newsIconRect.x = 569-(textWidth(this.news[this.headlinei]["title"])/2)
+
+          if(this.headlinei < this.news.length -1){
             this.headlinei++
           }else{
             this.headlinei = 0
@@ -34,8 +39,8 @@ class News{
     }
     
     updateData(data){
-        this.news = data
-        console.log("data loaded")
+        this.news = data.news
+        console.log(data)
         if(this.timer2 == -1){
           this.timer2 = 0
         }
