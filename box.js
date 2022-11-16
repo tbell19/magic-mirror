@@ -10,6 +10,7 @@ class Box{
     this.held = false
     this.destroy = false
     this.editMode = false
+    this.hasFocus = false
   }
   
   draw(){
@@ -41,29 +42,38 @@ class Box{
   
   
   checkClick(){
-  if(this.editMode){
-      if(!mouseIsPressed && this.held == true){this.held = false; saveData()}
-      
-      if(this.held || mouseIsPressed && mouseX > this.x && mouseX < this.x + this.w -40 &&
-          mouseY > this.y && mouseY < this.y + 40
-        ){
-          this.held = true
+    if(this.editMode){
+        if(!mouseIsPressed && this.held == true){this.held = false; saveData()}
         
-            this.x =  movedX + this.x
-            this.y =  movedY + this.y
-      }
-
-      if(!this.held &&  mouseIsPressed && mouseX > this.x+this.w-40 && mouseX < this.x + this.w &&
-        mouseY > this.y && mouseY < this.y + 40){
-          this.destroy = true
+        if(this.held || mouseIsPressed && mouseX > this.x && mouseX < this.x + this.w -40 &&
+            mouseY > this.y && mouseY < this.y + 40
+          ){
+            this.held = true
+          
+              this.x =  movedX + this.x
+              this.y =  movedY + this.y
         }
 
-      if(mouseIsPressed && mouseX > this.x && mouseX < this.x+4 + this.w && mouseY>this.y && mouseY < this.y+this.h+44){
-        return true
-      }else{
-        return false
+        if(!this.held &&  mouseIsPressed && mouseX > this.x+this.w-40 && mouseX < this.x + this.w &&
+          mouseY > this.y && mouseY < this.y + 40){
+            this.destroy = true
+          }
+
+
+    }
+    var x
+    for(x in this.elements){
+      if(this.elements[x] instanceof boxButton){
+        this.elements[x].checkClick()
       }
-   }
+    }
+
+
+    if(mouseIsPressed && mouseX > this.x && mouseX < this.x+4 + this.w && mouseY>this.y && mouseY < this.y+this.h+44){
+      return true
+    }else{
+      return false
+    }
   }
   
   text(text,size,x,y,textAlign = LEFT){
@@ -79,7 +89,12 @@ class Box{
   img(img,x,y){
     this.elements[this.elements.length] = new boxImg(this,this.elements.length,img,x,y);
     return this.elements[this.elements.length-1]
-  }    
+  }
+
+  button(text,size,callback,x,y){
+    this.elements[this.elements.length] = new boxButton(this,this.elements.length,text,size,callback,x,y);
+    return this.elements[this.elements.length-1]
+  }
 }
 
 
@@ -137,4 +152,54 @@ class boxImg{
     image(this.img,this.x+this.box.x,this.y+this.box.y+40)
   }
 
+}
+
+class boxButton{
+  constructor(box,id,text,size,callback,x,y){
+    this.box = box;
+    this.id = id;
+    this.text = text;
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.callback = callback;
+    this.hover = false;
+    this.pressed = false;
+  }
+
+  draw(){
+
+
+
+
+    textSize(this.size)
+    var asc = textAscent()*0.8 +4
+
+
+    if(mouseX > this.x+this.box.x-2 && mouseX < this.x+this.box.x-2+textWidth(this.text)+14 &&
+      mouseY > this.y+this.box.y+44+asc*2 && mouseY < this.y+this.box.y+42+asc*2 + asc+4
+    ){
+      this.hover = true
+    }else{
+      this.hover = false
+    }
+    if(this.hover){fill(0,0,0)}else{fill(255,255,255)}
+    rect(this.x+this.box.x-2,this.y+this.box.y+42+asc*2,textWidth(this.text)+14,asc+4,(asc/2)+2,(asc/2)+2,(asc/2)+2,(asc/2)+2)
+    if(this.hover){fill(255,255,255)}else{fill(0,0,0)}
+    rect(this.x+this.box.x,this.y+this.box.y+44+asc*2,textWidth(this.text)+10,asc,asc/2,asc/2,asc/2,asc/2)
+    if(this.hover){fill(0,0,0)}else{fill(255,255,255)}
+    text(this.text,this.box.x+this.x+5,this.box.y+this.y+40+asc*3)
+  }
+
+  checkClick(){
+    if(mouseIsPressed && this.hover){
+        if(this.pressed == false){
+        console.log("button pressed")
+        this.callback()
+        }
+        this.pressed = true
+    }else{
+      this.pressed = false
+    }
+  }
 }

@@ -6,6 +6,7 @@ class debugWindow{
         this.index = this.box.text("...",20,2,60);
         this.itxt = "..."
         this.frameRate = this.box.text("frame rate: ",20,2,80)
+        this.hasFocusTxt = this.box.text("frame rate: ",20,2,100)
         this.timer = 0
     }
 
@@ -23,7 +24,7 @@ class debugWindow{
             }           
             this.frameRate.text = "fps: "+ Math.round(frameRate())
         }
-        
+        this.hasFocusTxt.text = "hasFocus: "+this.box.hasFocus
     }
     
 }

@@ -31,7 +31,7 @@ class Weather{
         this.locName.text = String(data["name"]);
         this.current.text = String(Math.round(data.main.temp) + "°F");
         this.weatherDesc.text = data.weather[0].description
-        this.weatherImg = loadImage("http://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png")
+        this.weatherImg = loadImage(data.weather[0].icon+".png")
         this.img.img = this.weatherImg
     }
   }

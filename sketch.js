@@ -4,7 +4,7 @@ let bus
 
 let menuAnimAngle=0;
 let menuAnimMult=0;
-let showMenu = true;
+let showMenu = false;
 let windows = []
 let apps = []
 let leftArrow
@@ -43,35 +43,47 @@ function setup() {
 
   apps = [
     {
+      name:"Intro",
+      icon:loadImage("app-icons/info-square-fill.svg"),
+      appClass: Intro
+   },{
       name:"Weather",
-      icon:loadImage("cloud-fill.svg"),
+      icon:loadImage("app-icons/cloud-fill.svg"),
       appClass: Weather
    },{
       name:"Bus",
-      icon:loadImage("truck-front-fill.svg"),
+      icon:loadImage("app-icons/truck-front-fill.svg"),
       appClass: Bus
-   },
-   {
+   },{
       name:"Debug",
-      icon:loadImage("bug-fill.svg"),
+      icon:loadImage("app-icons/bug-fill.svg"),
       appClass: debugWindow
    },{
-    name:"Clock",
-    icon:loadImage("clock.svg"),
-    appClass: Clock
+      name:"Clock",
+      icon:loadImage("app-icons/clock.svg"),
+      appClass: Clock
    },{
-    name:"News",
-    icon:loadImage("news.svg"),
-    appClass: News
+    name:"Calendar",
+    icon:loadImage("app-icons/calendar-fill.svg"),
+    appClass: Calendar
+  },{
+      name:"News",
+      icon:loadImage("app-icons/news.svg"),
+      appClass: News
    },
    {
-    name:"Health",
-    icon:loadImage("bandaid.svg"),
-    appClass: Health
+      name:"Health",
+      icon:loadImage("app-icons/bandaid.svg"),
+      appClass: Health
    }
   ]
 
   let windowCookie = getItem("windows")
+
+  if(!windowCookie){
+    windows = [new Intro((windowWidth/2)-400,((windowHeight-400)/2))]
+  }
+
   for(i in windowCookie){
     for(j in apps){
       if(apps[j].appClass.name == windowCookie[i].appClass){
@@ -101,22 +113,34 @@ function draw() {
     }
   }
   background(0,0,0);
-  for(i in windows){
-    if(windows[i].box.checkClick() == true){
-      let topWindow = windows[i]
-      if(i != 0){
-        windows.splice(i,1)
-        windows.unshift(topWindow)
-      }
-      //saveData()
-      break
-    }
 
+
+  if(mouseIsPressed && showMenu == false || (dist(0,windowHeight,mouseX,mouseY) > 180 && showMenu == true)){ //if the mouse is not on menu
+    for(i in windows){                            
+      if(windows[i].box.checkClick() == true){
+        let topWindow = windows[i]
+        if(i != 0){
+          windows.splice(i,1)
+          windows.unshift(topWindow)
+        }
+        //saveData()
+        break
+      }
+  
+    }
   }
+
+
   for(i in windows){
     if(windows[i].hasOwnProperty("itxt")){
       windows[i].itxt = i + " / "+ windows.length
     }
+    if(i == 0){
+      windows[i].box.hasFocus = true
+    }else{
+      windows[i].box.hasFocus = false
+    }
+
     i = windows[windows.length-1-i]
     try{
     i.update();
@@ -249,7 +273,7 @@ function drawMenu(){
     textAlign(CENTER)
     text("Page: ",68,windowHeight-70)
     textSize(25);
-    text((page+1)+"/"+Math.floor(apps.length/3),85,windowHeight-40)
+    text((page+1)+"/"+Math.ceil(apps.length/3),85,windowHeight-40)
   }
 
   fill(255*abs(menuAnimMult),255*abs(menuAnimMult),255*abs(menuAnimMult))

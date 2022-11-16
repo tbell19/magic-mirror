@@ -8,7 +8,7 @@ class News{
       this.headlineAnim = 1
       this.headlinei = 0
       this.news = {}
-      this.newsImg = loadImage("news.svg")
+      this.newsImg = loadImage("app-icons/news.svg")
       this.newsIconRect = this.box.rect(646-(textWidth("Loading headlines.")/2),18,18,16)
       this.newsIcon = this.box.img(this.newsImg,650-(textWidth("Loading headlines.")/2),18)
       this.titletxt = this.box.text("Loading headlines.",20,600,32,CENTER)
